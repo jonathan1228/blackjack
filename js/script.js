@@ -18,16 +18,16 @@ function Deck(){
 	// one for suits
 	// one for values
 	shuffled = _.shuffle(cards);
-	// for(var i = 0; i < cards.length; i++){
+	for(var i = 0; i < cards.length; i++){
 		
-	// 	console.log(shuffled[i]);
+		console.log(shuffled[i]);
 
-	// }
-	// console.log(shuffled[5].value + " " + shuffled[5].name + " " + shuffled[5].suit)
+	}
+	console.log(shuffled[5].value + " " + shuffled[5].name + " " + shuffled[5].suit)
 	return shuffled;
 	
 }
-function Card(suit,name, value){
+function Card(suit,name,value){
 	this.suit = suit;
 	this.name = name;
 	this.value = value;
