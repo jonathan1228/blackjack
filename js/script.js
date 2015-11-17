@@ -1,4 +1,46 @@
+function Game(){
+	this.numberOfPlayers = prompt("How many players?");
+	this.players = [];
+	this.deck = new Deck();
+	var name = "";
+	
+	
+	//initialize game
 
+	this.gameStart = function(){
+		// initialize each player with their own name and 2 cards.
+		for(var i = 0; i < this.numberOfPlayers; i++){
+			name = prompt("What is your name?");
+			players[i] = new Players(name, this.deck.deal());
+		};
+	}
+}
+function Player(name, cards){
+	// associate each instance of the class to the name of the player
+	this.name = name;
+	//cards belong to this instance of the player
+	this.cards = [];
+	this.cards.push(cards);
+	this.tracker;
+	//has its own methods of hit and stay.
+	// can call the hit method if the player decides to
+	
+	this.hit = function(){
+		for(var i = 0; i < cards.length; i++){
+			tracker += this.cards.value;
+		}
+		if(tracker < 21){
+			this.cards.push(Dealer.draw());
+		}
+	};
+
+	this.stay = function(){
+		Game.next();
+	}
+
+
+	
+}
 function Deck(){
 	//create an array
 	// all of it's elements should be instances of the Card class
