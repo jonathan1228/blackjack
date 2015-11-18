@@ -1,4 +1,17 @@
 //<img src = "img/" + suit + "/" + value + ".png">
+var row = $("<div>").addClass("row");
+var row2 = $("<div>").addClass("row");
+var dealer = $("<div>").addClass("col-md-12 text-center");
+var player = $("<div>").addClass("col-md-12 text-center");
+$('#game').append(row,row2);
+$(row).append(dealer);
+$(row2).append(player);
+function makeCards(cards){
+	var card = $("<img>");
+	card.attr("src","img/cards/" + cards.suit + "/" + cards.name + ".png")
+	return card;
+}
+
 function Game(){
 	this.numberOfPlayers = prompt("How many players?");
 	this.players = [];
@@ -15,19 +28,28 @@ function Game(){
 		for(var i = 0; i < this.numberOfPlayers; i++){
 			name = prompt("What is your name?");
 			this.players[i] = new Player(name, this.dealer.deal(), this.dealer);
+			
 		};
 
 		this.dealer.dealerCards = this.dealer.deal();
+		for(var i = 0; i < this.dealer.dealerCards.length; i++){
+			$(dealer).append(makeCards(this.dealer.dealerCards[i]))
+		}
 		for(var i = 0; i < this.players.length; i++){
 			for(var j = 0; j < this.players[i].cards.length; j++){
-				if(this.players[i].cards[j].name === "Ace"){
+				$(player).append(makeCards(this.players[i].cards[j]));
+				
+				if(this.players[i].cards[j].name === "ace"){
 					var ace = prompt("You have an ACE! 1 or 11?");
 					if(ace === "1"){
 						this.players[i].cards[j].value = 1;
+						
 					}
 					else{
 						this.players[i].cards[j].value = 11;
+						
 					}
+					
 				}
 			}
 		}
@@ -40,7 +62,7 @@ function Game(){
 				switch(hitOrStay){
 					case "hit":
 						this.players[i].hit();
-						if(this.players[i].cards[this.players[i].cards.length-1].name = "Ace"){
+						if(this.players[i].cards[this.players[i].cards.length-1].name === "ace"){
 							var ace = prompt("You have an ACE! 1 or 11?");
 							if(ace === "1"){
 								this.players[i].cards[this.players[i].cards.length-1].value = 1;
@@ -49,6 +71,7 @@ function Game(){
 								this.players[i].cards[this.players[i].cards.length-1].value = 11;
 							}
 						}
+						player.append(makeCards(this.players[i].cards[this.players[i].cards.length - 1]));
 						break;
 					case "stay":
 						this.players[i].stay();
@@ -67,7 +90,7 @@ function Game(){
 					case "hit":
 						this.dealer.checker();
 						this.dealer.dealerCards.push(this.dealer.draw());
-						if(this.dealer.dealerCards[this.dealer.dealerCards.length-1].name = "Ace"){
+						if(this.dealer.dealerCards[this.dealer.dealerCards.length-1].name === "ace"){
 							var ace = prompt("You have an ACE! 1 or 11?");
 							if (ace === "1"){
 								this.dealer.dealerCards[this.dealer.dealerCards.length-1].value = 1;
@@ -76,6 +99,7 @@ function Game(){
 								this.dealer.dealerCards[this.dealer.dealerCards.length-1].value = 11;
 							}
 						}
+						$(dealer).append(makeCards(this.dealer.dealerCards[this.dealer.dealerCards.length - 1]));
 						break;
 					case "stay":
 						this.dealer.stayStatus = true;
@@ -104,8 +128,8 @@ function Game(){
 			
 		}
 	}
-
 }
+
 
 function Dealer(){
 	this.deck = _.shuffle(new Deck());
@@ -153,6 +177,7 @@ function Player(name, twoCards, dealer){
 		}
 
 		if(this.tracker < 21){
+
 			this.cards.push(dealer.draw());
 			
 			var newTotal = this.tracker + this.cards[this.cards.length -1].value;
@@ -173,8 +198,8 @@ function Player(name, twoCards, dealer){
 function Deck(){
 	//create an array
 	// all of it's elements should be instances of the Card class
-	this.suits = ["Spade", "Diamond", "Clubs", "Heart"];
-	this.names = ["Ace",2,3,4,5,6,7,8,9,10,"Jack","Queen","King"];
+	this.suits = ["spade", "diamond", "club", "heart"];
+	this.names = ["ace","2","3","4","5","6","7","8","9","10","jack","queen","king"];
 	this.cards = [];
 
 	for(var i = 0; i < this.suits.length; i++){
