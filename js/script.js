@@ -1,4 +1,4 @@
-
+//<img src = "img/" + suit + "/" + value + ".png">
 function Game(){
 	this.numberOfPlayers = prompt("How many players?");
 	this.players = [];
@@ -18,6 +18,19 @@ function Game(){
 		};
 
 		this.dealer.dealerCards = this.dealer.deal();
+		for(var i = 0; i < this.players.length; i++){
+			for(var j = 0; j < this.players[i].cards.length; j++){
+				if(this.players[i].cards[j].name === "Ace"){
+					var ace = prompt("You have an ACE! 1 or 11?");
+					if(ace === "1"){
+						this.players[i].cards[j].value = 1;
+					}
+					else{
+						this.players[i].cards[j].value = 11;
+					}
+				}
+			}
+		}
 	}
 	this.gameRound = function(){
 		for(var i = 0; i < this.players.length; i++){
@@ -27,6 +40,15 @@ function Game(){
 				switch(hitOrStay){
 					case "hit":
 						this.players[i].hit();
+						if(this.players[i].cards[this.players[i].cards.length-1].name = "Ace"){
+							var ace = prompt("You have an ACE! 1 or 11?");
+							if(ace === "1"){
+								this.players[i].cards[this.players[i].cards.length-1].value = 1;
+							}
+							else{
+								this.players[i].cards[this.players[i].cards.length-1].value = 11;
+							}
+						}
 						break;
 					case "stay":
 						this.players[i].stay();
@@ -45,6 +67,15 @@ function Game(){
 					case "hit":
 						this.dealer.checker();
 						this.dealer.dealerCards.push(this.dealer.draw());
+						if(this.dealer.dealerCards[this.dealer.dealerCards.length-1].name = "Ace"){
+							var ace = prompt("You have an ACE! 1 or 11?");
+							if (ace === "1"){
+								this.dealer.dealerCards[this.dealer.dealerCards.length-1].value = 1;
+							}
+							else{
+								this.dealer.dealerCards[this.dealer.dealerCards.length-1].value = 11;
+							}
+						}
 						break;
 					case "stay":
 						this.dealer.stayStatus = true;
@@ -149,7 +180,12 @@ function Deck(){
 	for(var i = 0; i < this.suits.length; i++){
 		
 		for(var j = 0; j < this.names.length; j++){
-			this.cards.push(new Card(this.suits[i], this.names[j], j+1));
+			if(j >= 10){
+				this.cards.push(new Card(this.suits[i], this.names[j], 10));
+			}
+			else{
+				this.cards.push(new Card(this.suits[i], this.names[j], j+1));
+			}
 		}
 
 	}
