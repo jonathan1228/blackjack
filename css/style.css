@@ -8,3 +8,34 @@ h1{
 	background-repeat: no-repeat;
 	width: 100vw;
 }
+#background{
+	background: #777;
+}
+#myCarousel{
+	/*border-radius: 25px;*/
+}
+
+.carousel {
+	box-shadow: 0 0 15px black;
+	border-radius: 25px;
+	overflow: hidden;
+
+}
+.slide {
+	border-radius: 25px;
+	overflow: hidden;
+}
+.carousel-inner{
+	border-radius: 25px;
+	overflow: hidden;
+}
+.carousel .item {
+    border-radius: 25px;
+    overflow: hidden;
+}
+.carousel-control {
+    border-radius: 25px;
+}
+#image{
+	border-radius: 25px;
+}
