@@ -1,7 +1,14 @@
 //<img src = "img/" + suit + "/" + value + ".png">
-var row = $("<div>").addClass("row");
-var row2 = $("<div>").addClass("row");
-$('#game').append(row,row2);
+var row;
+var row2;
+window.onload = function(){
+	row = $("<div>").addClass("row");
+	row2 = $("<div>").addClass("row");
+	var game = new Game();
+	$('#game').append(row,row2);
+	console.log(game);
+	console.log()
+}
 function makeRows(){
 
 }
