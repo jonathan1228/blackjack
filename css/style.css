@@ -1,20 +1,17 @@
 h1{
 	color: grey;
 }
-#game{
-	background-image: url("../img/table.jpg");
-	background-size: contain;
-	height: 100vh;
-	background-repeat: no-repeat;
-	width: 100vw;
-}
 #background{
-	background: #777;
-}
-#myCarousel{
-	/*border-radius: 25px;*/
-}
+	background: url("../img/background3.jpg");
 
+	
+}
+.transparent{
+	background: transparent;
+}
+div{
+	background: rgba(255,255,255,.25);
+}
 .carousel {
 	box-shadow: 0 0 15px black;
 	border-radius: 25px;
