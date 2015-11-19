@@ -173,7 +173,7 @@ Dealer.prototype.dealerCards = function(){
 	for(var i = 0; i < this.dealerCards.length; i++){
 		if(this.dealerCards[i].name === "ace"){
 			var ace = prompt("You have an ACE! 1 or 11?");
-			if(ace === "1"){
+			if(ace === 1){
 				this.dealerCards[i].value = 1;
 			}
 			else{
@@ -189,16 +189,19 @@ Dealer.prototype.render = function(){
 	}
 };
 Dealer.prototype.hitOrStay = function(){
-
-	var hit = $('<div>').addClass("row btn btn-danger hit").html("Hit");
+var row3 = $("<div>").addClass("row");
+	var row4 = $("<div>").addClass("row");
+	var hit = $("<div>").addClass("col-md-2 col-md-offset-5 btn btn-danger hit").html("Hit");
 	hit.click((function(){
 		this.hit();
 	}).bind(this));
-	var stay = $('<div>').addClass("row btn btn-danger stay").html("Stay");
+	(row3).append(hit);
+	var stay = $("<div>").addClass("col-md-2 col-md-offset-5 btn btn-danger stay").html("Stay");
 	stay.click((function(){
 		this.stayPut();
 	}).bind(this));
-	$('#game').append(hit, stay);
+	$(row4).append(stay);
+	$("#game").append(row3, row4);
 }
 Dealer.prototype.removeButtons = function(){
 	$('.hit').remove();
@@ -217,7 +220,7 @@ Dealer.prototype.hit = function(){
 	this.dealerCards.push(this.draw());
 	if(this.dealerCards[this.dealerCards.length-1].name === "ace"){
 		var ace = prompt("You have an ACE! 1 or 11?");
-		if(ace === "1"){
+		if(ace === 1){
 			this.dealerCards[this.dealerCards.length-1].value = 1;
 		}
 		else{
@@ -248,16 +251,19 @@ function Player(name, twoCards, dealer, game){
 	this.stayStatus = false;
 }
 Player.prototype.hitOrStay = function(){
-
-	var hit = $('<div>').addClass("row btn btn-danger hit").html("Hit");
+	var row3 = $("<div>").addClass("row");
+	var row4 = $("<div>").addClass("row");
+	var hit = $("<div>").addClass("col-md-2 col-md-offset-5 btn btn-danger hit").html("Hit");
 	hit.click((function(){
 		this.hit();
 	}).bind(this));
-	var stay = $('<div>').addClass("row btn btn-danger stay").html("Stay");
+	(row3).append(hit);
+	var stay = $("<div>").addClass("col-md-2 col-md-offset-5 btn btn-danger stay").html("Stay");
 	stay.click((function(){
 		this.stayPut();
 	}).bind(this));
-	$('#game').append(hit, stay);
+	$(row4).append(stay);
+	$("#game").append(row3, row4);
 }
 Player.prototype.removeButtons = function(){
 	$('.hit').remove();
@@ -276,7 +282,7 @@ Player.prototype.hit = function(){
 	this.cards.push(this.dealer.draw());
 	if(this.cards[this.cards.length-1].name === "ace"){
 		var ace = prompt("You have an ACE! 1 or 11?");
-		if(ace === "1"){
+		if(ace === 1){
 			this.cards[this.cards.length-1].value = 1;
 		}
 		else{
@@ -310,7 +316,7 @@ Player.prototype.playerCards = function(){
 			if(this.cards[j].name === "ace"){
 
 				var ace = prompt("You have an ACE! 1 or 11?");
-				if(ace === "1"){
+				if(ace === 1){
 					this.cards[j].value = 1;
 					
 				}
