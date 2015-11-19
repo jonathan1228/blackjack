@@ -6,8 +6,8 @@ window.onload = function(){
 	row2 = $("<div>").addClass("row");
 	var game = new Game();
 	$('#game').append(row,row2);
-	console.log(game);
-	console.log()
+
+
 }
 function makeRows(){
 
@@ -16,9 +16,12 @@ function Game(){
 
 	this.numberOfPlayers = prompt("How many players?");
 	this.players = [];
-	this.dealer = new Dealer();
+	this.game = this;
+	this.dealer = new Dealer(this.game);
 	this.dealerScore = 0;
 	var name;
+	this.i;
+	this.currentPlayer;
 	this.endRound = 0;
 	//add outcome
 	//add betting
@@ -26,6 +29,7 @@ function Game(){
 	var button = $("<button>").addClass("row btn btn-danger").html("Start Game");
 	button.click((function(){
 		this.gameStart();
+
 	}).bind(this));
 	$('#game').append(button);
 
@@ -35,139 +39,97 @@ Game.prototype.gameStart = function(){
 	$(row).append(this.dealer.div);
 	for(var i = 0; i < this.numberOfPlayers; i++){
 		name = prompt("What is your name?");
-		this.players[i] = new Player(name, this.dealer.deal(), this.dealer);
+		this.players[i] = new Player(name, this.dealer.deal(), this.dealer, this.game);
 		this.players[i].playerCards();
 		this.players[i].render();
-		
 	};
-
 	this.dealer.dealerCards();
-
 	this.dealer.render();
-
+	this.i = 0;
+	this.currentPlayer = this.players[this.i];
+	this.currentPlayer.hitOrStay();
+	this.gameRound();
+}
+Game.prototype.dealerRound = function(){
+	if(this.dealer.bust || this.dealer.stay){
+		this.dealer.removeButtons();
+		this.outcome();
+	}
 }
 
 Game.prototype.gameRound = function(){
-	//loop through the players
-	for(var i = 0; i < this.players.length; i++){
-		while(this.players[i].stayStatus !== true){
-		//while(this.players[i].continue){
-			//this.players[i].hitOrStay();
-
-			console.log(this.players[i].cards);
-			var hitOrStay = prompt("Do you like to hit or stay?")
-			switch(hitOrStay){
-				case "hit":
-					this.players[i].hit();
-					//put the below code in hit()
-					if(this.players[i].cards[this.players[i].cards.length-1].name === "ace"){
-						var ace = prompt("You have an ACE! 1 or 11?");
-						if(ace === "1"){
-							this.players[i].cards[this.players[i].cards.length-1].value = 1;
-						}
-						else{
-							this.players[i].cards[this.players[i].cards.length-1].value = 11;
-						}
-					}
-					this.players[i].render();
-					break;
-				case "stay":
-					this.players[i].stay();
-					break;
-				default:
-					console.log("Invalid answer!")
-					break;
-
-			};
-		};
-		if(this.players[i].bust === true){
-			console.log(this.players[i].name + " BUSTED");
-			this.numberOfPlayers--;
+		if(this.currentPlayer.bust || this.currentPlayer.stay){
+			this.currentPlayer.removeButtons();
+			this.i++;
+			if(this.currentPlayer.bust){
+				this.numberOfPlayers--;
+			}
+			this.currentPlayer = this.players[this.i];
+			if(this.currentPlayer !== undefined){
+				this.currentPlayer.hitOrStay();
+			}
+			else{
+				this.dealer.hitOrStay();
+				this.dealerRound();
+			}
 		}
+		
 	}
-		while(this.dealer.stayStatus !== true){
-			console.log(this.dealer.dealerCards)
-			var hitOrStay = prompt("Do you like to hit or stay?")
-				switch(hitOrStay){
-					case "hit":
-						
-						this.dealer.dealerCards.push(this.dealer.draw());
-						if(this.dealer.dealerCards[this.dealer.dealerCards.length-1].name === "ace"){
-							var ace = prompt("You have an ACE! 1 or 11?");
-							if (ace === "1"){
-								this.dealer.dealerCards[this.dealer.dealerCards.length-1].value = 1;
-							}
-							else{
-								this.dealer.dealerCards[this.dealer.dealerCards.length-1].value = 11;
-							}
-						}
-						this.dealer.render();
-						this.dealer.checker();
-						break;
-					case "stay":
-						this.dealer.stayStatus = true;
-						break;
-					default:
-						console.log("Invalid answer!")
-						break;
-
-				};
-		}
-		if(this.dealer.bust === true){
+Game.prototype.outcome = function(){
+	if(this.dealer.bust){
 				console.log("DEALER BUSTED");
-			}
-		if(this.dealer.bust !== true && this.numberOfPlayers > 0){
-			for(var i = 0; i < this.dealer.dealerCards.length; i++){
-				this.dealerScore += this.dealer.dealerCards[i].value;
-			}
-			for(var i = 0; i < this.players.length; i++){
-				var playerScore = 0;
-				if(this.players[i].bust !== true){
-					for(var j = 0; j < this.players[i].cards.length; j++){
-						playerScore += this.players[i].cards[j].value;
-					}
-					
-					if(playerScore > this.dealerScore ){
-						console.log(this.players[i].name + " beats the dealer!");
-					}
-					else{
-						console.log("Dealer beats " + this.players[i].name);
-					}
+	}
+	if(this.dealer.bust === false && this.numberOfPlayers > 0){
+		for(var i = 0; i < this.dealer.dealerCards.length; i++){
+			this.dealerScore += this.dealer.dealerCards[i].value;
+		}
+		for(var i = 0; i < this.players.length; i++){
+			var playerScore = 0;
+			if(this.players[i].bust === false){
+				for(var j = 0; j < this.players[i].cards.length; j++){
+					playerScore += this.players[i].cards[j].value;
+				}
+				
+				if(playerScore > this.dealerScore){
+					console.log(this.players[i].name + " beats the dealer!");
+				}
+				else{
+					console.log("Dealer beats " + this.players[i].name);
 				}
 			}
 		}
-		if(this.dealer.bust === true && this.numberOfPlayers > 0){
-			for(var i = 0; i < this.players.length; i++){
-				var playerScore = 0;
-				if(this.players[i].bust !== true){
-					for(var j = 0; j < this.players[i].cards.length; j++){
-						console.log(this.players[i].name + " beats the dealer!");;
-					}
-
+	}
+	if(this.dealer.bust === true && this.numberOfPlayers > 0){
+		for(var i = 0; i < this.players.length; i++){
+			var playerScore = 0;
+			if(this.players[i].bust !== true){
+				for(var j = 0; j < this.players[i].cards.length; j++){
+					console.log(this.players[i].name + " beats the dealer!");;
 				}
+
 			}
 		}
-		if(this.dealer.bust !== true && this.numberOfPlayers === 0){
-			console.log("DEALER WINS!");
-		}
-
+	}
+	if(this.dealer.bust !== true && this.numberOfPlayers === 0){
+		console.log("DEALER WINS!");
 	}
 
-function Dealer(){
+}
+function Dealer(game){
 	this.deck = _.shuffle(new Deck());
 	this.dealerCards;
-	this.stayStatus = false;
+	this.game = game;
+	this.stay = false;
 	this.score = 0;
 	this.bust = false;
 	this.twentyOne = false;
 	this.div = $("<div>").addClass("col-md-12 text-center");
-	this.deal = function(){
-		var twoCards = [];
-		twoCards.push(this.deck.pop());
-		twoCards.push(this.deck.pop());
-		return twoCards
-	}
-
+}
+Dealer.prototype.deal = function(){
+	var twoCards = [];
+	twoCards.push(this.deck.pop());
+	twoCards.push(this.deck.pop());
+	return twoCards
 }
 Dealer.prototype.checker = function(){
 	for(var i = 0; i < this.dealerCards.length; i++){
@@ -226,48 +188,112 @@ Dealer.prototype.render = function(){
 			this.div.append(this.dealerCards[i].render())
 	}
 };
+Dealer.prototype.hitOrStay = function(){
 
-function Player(name, twoCards, dealer){
+	var hit = $('<div>').addClass("row btn btn-danger hit").html("Hit");
+	hit.click((function(){
+		this.hit();
+	}).bind(this));
+	var stay = $('<div>').addClass("row btn btn-danger stay").html("Stay");
+	stay.click((function(){
+		this.stayPut();
+	}).bind(this));
+	$('#game').append(hit, stay);
+}
+Dealer.prototype.removeButtons = function(){
+	$('.hit').remove();
+	$('.stay').remove();
+}
+Dealer.prototype.isBust = function(){
+	for(var i = 0; i < this.dealerCards.length; i++){
+		this.score += this.dealerCards[i].value;
+	}
+	if(this.score > 21){
+		this.score = 0;
+        this.bust = true;
+    }
+}
+Dealer.prototype.hit = function(){
+	this.dealerCards.push(this.draw());
+	if(this.dealerCards[this.dealerCards.length-1].name === "ace"){
+		var ace = prompt("You have an ACE! 1 or 11?");
+		if(ace === "1"){
+			this.dealerCards[this.dealerCards.length-1].value = 1;
+		}
+		else{
+			this.dealerCards[this.dealerCards.length-1].value = 11;
+		}
+	}
+	this.render();
+	this.isBust();
+	this.game.dealerRound();
 
+};
+Dealer.prototype.stayPut = function(){
+	this.stay = true;
+	this.game.dealerRound();
+}	
+function Player(name, twoCards, dealer, game){
+	this.game = game;
 	this.name = name;
-	var dealer = dealer;
+	this.dealer = dealer;
 	// this player's cards
 	this.cards = twoCards;
 	this.bust = false;
+	this.stay = false;
 	this.twentyOne = false;
 	this.div = $("<div>").addClass("col-md-12 text-center");
 	// tracks player's score
 	this.tracker = 0;
 	this.stayStatus = false;
-	this.hit = function(){
-		
-		for(var i = 0; i < this.cards.length; i++){
-			this.tracker += this.cards[i].value;
-		}
-
-		if(this.tracker < 21){
-
-			this.cards.push(dealer.draw());
-			
-			var newTotal = this.tracker + this.cards[this.cards.length -1].value;
-            if (newTotal > 21) {
-              this.stayStatus = true;
-              this.bust = true;
-            }
-
-			this.tracker = 0;
-		}
-		if(this.tracker === 21){
-			this.twentyOne = true;
-			this.stayStatus = true;
-		}
-
-	};
-
-	this.stay = function(){
-		this.stayStatus = true;
-	}	
 }
+Player.prototype.hitOrStay = function(){
+
+	var hit = $('<div>').addClass("row btn btn-danger hit").html("Hit");
+	hit.click((function(){
+		this.hit();
+	}).bind(this));
+	var stay = $('<div>').addClass("row btn btn-danger stay").html("Stay");
+	stay.click((function(){
+		this.stayPut();
+	}).bind(this));
+	$('#game').append(hit, stay);
+}
+Player.prototype.removeButtons = function(){
+	$('.hit').remove();
+	$('.stay').remove();
+}
+Player.prototype.isBust = function(){
+	for(var i = 0; i < this.cards.length; i++){
+		this.tracker += this.cards[i].value;
+	}
+	if(this.tracker > 21){
+		this.tracker = 0;
+        this.bust = true;
+    }
+}
+Player.prototype.hit = function(){
+	this.cards.push(this.dealer.draw());
+	if(this.cards[this.cards.length-1].name === "ace"){
+		var ace = prompt("You have an ACE! 1 or 11?");
+		if(ace === "1"){
+			this.cards[this.cards.length-1].value = 1;
+		}
+		else{
+			this.cards[this.cards.length-1].value = 11;
+		}
+	}
+	this.render();
+	this.isBust();
+	this.game.gameRound();
+
+};
+Player.prototype.stayPut = function(){
+	this.stay = true;
+	this.game.gameRound();
+}	
+
+
 Player.prototype.render = function(){
 	this.div.html("");
 	for(var i = 0; i < this.cards.length; i++){
