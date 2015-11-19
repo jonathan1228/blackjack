@@ -26,9 +26,15 @@ function Game(){
 	//add outcome
 	//add betting
 	//initialize game
-	var button = $("<button>").addClass("row btn btn-danger").html("Start Game");
+	var startRound = $("<button>").addClass("row btn btn-danger start").html("Start Round");
+	var button = $("<button>").addClass("row btn btn-danger button").html("Start Game");
 	button.click((function(){
 		this.gameStart();
+		$(".button").hide();
+		$('#game').append(startRound);
+		startRound.click((function(){
+			this.gameRound();
+		}).bind(this));
 
 	}).bind(this));
 	$('#game').append(button);
@@ -48,7 +54,7 @@ Game.prototype.gameStart = function(){
 	this.i = 0;
 	this.currentPlayer = this.players[this.i];
 	this.currentPlayer.hitOrStay();
-	this.gameRound();
+	this.gameTurn();
 }
 Game.prototype.dealerRound = function(){
 	if(this.dealer.bust || this.dealer.stay){
@@ -56,8 +62,30 @@ Game.prototype.dealerRound = function(){
 		this.outcome();
 	}
 }
-
 Game.prototype.gameRound = function(){
+	$(row).empty();
+	$(row2).empty();
+	for(var i = 0; i < this.players.length; i++){
+		this.players[i].cards.length = 0;
+		this.players[i].bust = false;
+		this.players[i].stay = false;
+		this.players[i].cards.push(this.dealer.draw());
+		this.players[i].cards.push(this.dealer.draw());
+		this.players[i].playerCards();
+		this.players[i].render();
+	}
+	$(row).append(this.dealer.div);
+	this.dealer.bust = false;
+	this.dealer.stay = false;
+	this.dealer.cards.length = 0;
+	this.dealer.dealerCards();
+	this.dealer.render();
+	this.i = 0;
+	this.currentPlayer = this.players[this.i];
+	this.currentPlayer.hitOrStay();
+	this.gameTurn();
+}
+Game.prototype.gameTurn = function(){
 		if(this.currentPlayer.bust || this.currentPlayer.stay){
 			this.currentPlayer.removeButtons();
 			this.i++;
@@ -77,11 +105,11 @@ Game.prototype.gameRound = function(){
 	}
 Game.prototype.outcome = function(){
 	if(this.dealer.bust){
-				console.log("DEALER BUSTED");
+				alert("DEALER BUSTED");
 	}
 	if(this.dealer.bust === false && this.numberOfPlayers > 0){
-		for(var i = 0; i < this.dealer.dealerCards.length; i++){
-			this.dealerScore += this.dealer.dealerCards[i].value;
+		for(var i = 0; i < this.dealer.cards.length; i++){
+			this.dealerScore += this.dealer.cards[i].value;
 		}
 		for(var i = 0; i < this.players.length; i++){
 			var playerScore = 0;
@@ -91,10 +119,10 @@ Game.prototype.outcome = function(){
 				}
 				
 				if(playerScore > this.dealerScore){
-					console.log(this.players[i].name + " beats the dealer!");
+					alert(this.players[i].name + " beats the dealer!");
 				}
 				else{
-					console.log("Dealer beats " + this.players[i].name);
+					alert("Dealer beats " + this.players[i].name);
 				}
 			}
 		}
@@ -104,20 +132,20 @@ Game.prototype.outcome = function(){
 			var playerScore = 0;
 			if(this.players[i].bust !== true){
 				for(var j = 0; j < this.players[i].cards.length; j++){
-					console.log(this.players[i].name + " beats the dealer!");;
+					alert(this.players[i].name + " beats the dealer!");;
 				}
 
 			}
 		}
 	}
 	if(this.dealer.bust !== true && this.numberOfPlayers === 0){
-		console.log("DEALER WINS!");
+		alert("DEALER WINS!");
 	}
 
 }
 function Dealer(game){
 	this.deck = _.shuffle(new Deck());
-	this.dealerCards;
+	this.cards;
 	this.game = game;
 	this.stay = false;
 	this.score = 0;
@@ -132,8 +160,8 @@ Dealer.prototype.deal = function(){
 	return twoCards
 }
 Dealer.prototype.checker = function(){
-	for(var i = 0; i < this.dealerCards.length; i++){
-		this.score += this.dealerCards[i].value;
+	for(var i = 0; i < this.cards.length; i++){
+		this.score += this.cards[i].value;
 	}
 	if(this.score > 21){
 		this.stayStatus = true;
@@ -152,8 +180,8 @@ Dealer.prototype.draw = function(){
 	return drawCard
 }
 Dealer.prototype.checker = function(){
-	for(var i = 0; i < this.dealerCards.length; i++){
-		this.score += this.dealerCards[i].value;
+	for(var i = 0; i < this.cards.length; i++){
+		this.score += this.cards[i].value;
 	}
 	if(this.score > 21){
 		this.stayStatus = true;
@@ -168,24 +196,24 @@ Dealer.prototype.checker = function(){
 	}
 }
 Dealer.prototype.dealerCards = function(){
-	this.dealerCards = this.deal();
+	this.cards = this.deal();
 
-	for(var i = 0; i < this.dealerCards.length; i++){
-		if(this.dealerCards[i].name === "ace"){
-			var ace = prompt("You have an ACE! 1 or 11?");
+	for(var i = 0; i < this.cards.length; i++){
+		if(this.cards[i].name === "ace"){
+			var ace = Number(prompt("You have an ACE! 1 or 11?"));
 			if(ace === 1){
-				this.dealerCards[i].value = 1;
+				this.cards[i].value = 1;
 			}
 			else{
-				this.dealerCards[i].value = 11;
+				this.cards[i].value = 11;
 			}
 		}
 	}
 };
 Dealer.prototype.render = function(){
 	this.div.html("");
-	for(var i = 0; i < this.dealerCards.length; i++){
-			this.div.append(this.dealerCards[i].render())
+	for(var i = 0; i < this.cards.length; i++){
+			this.div.append(this.cards[i].render())
 	}
 };
 Dealer.prototype.hitOrStay = function(){
@@ -208,8 +236,8 @@ Dealer.prototype.removeButtons = function(){
 	$('.stay').remove();
 }
 Dealer.prototype.isBust = function(){
-	for(var i = 0; i < this.dealerCards.length; i++){
-		this.score += this.dealerCards[i].value;
+	for(var i = 0; i < this.cards.length; i++){
+		this.score += this.cards[i].value;
 	}
 	if(this.score > 21){
 		this.score = 0;
@@ -217,14 +245,14 @@ Dealer.prototype.isBust = function(){
     }
 }
 Dealer.prototype.hit = function(){
-	this.dealerCards.push(this.draw());
-	if(this.dealerCards[this.dealerCards.length-1].name === "ace"){
-		var ace = prompt("You have an ACE! 1 or 11?");
+	this.cards.push(this.draw());
+	if(this.cards[this.cards.length-1].name === "ace"){
+		var ace = Number(prompt("You have an ACE! 1 or 11?"));
 		if(ace === 1){
-			this.dealerCards[this.dealerCards.length-1].value = 1;
+			this.cards[this.cards.length-1].value = 1;
 		}
 		else{
-			this.dealerCards[this.dealerCards.length-1].value = 11;
+			this.cards[this.cards.length-1].value = 11;
 		}
 	}
 	this.render();
@@ -281,7 +309,7 @@ Player.prototype.isBust = function(){
 Player.prototype.hit = function(){
 	this.cards.push(this.dealer.draw());
 	if(this.cards[this.cards.length-1].name === "ace"){
-		var ace = prompt("You have an ACE! 1 or 11?");
+		var ace = Number(prompt("You have an ACE! 1 or 11?"));
 		if(ace === 1){
 			this.cards[this.cards.length-1].value = 1;
 		}
@@ -291,12 +319,12 @@ Player.prototype.hit = function(){
 	}
 	this.render();
 	this.isBust();
-	this.game.gameRound();
+	this.game.gameTurn();
 
 };
 Player.prototype.stayPut = function(){
 	this.stay = true;
-	this.game.gameRound();
+	this.game.gameTurn();
 }	
 
 
@@ -315,7 +343,7 @@ Player.prototype.playerCards = function(){
 			twentyOne += this.cards[j].value;
 			if(this.cards[j].name === "ace"){
 
-				var ace = prompt("You have an ACE! 1 or 11?");
+				var ace = Number(prompt("You have an ACE! 1 or 11?"));
 				if(ace === 1){
 					this.cards[j].value = 1;
 					
