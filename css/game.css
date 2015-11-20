@@ -1,6 +1,6 @@
-#game{
+#game {
 	background-image: url("../img/table.jpg");
-	background-size: contain;
+	background-size: cover;
 	height: 100vh;
 	background-repeat: no-repeat;
 	width: 100vw;

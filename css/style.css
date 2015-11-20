@@ -2,8 +2,9 @@ h1{
 	color: grey;
 }
 #background{
-	background: url("../img/background3.jpg");
-
+	background: url("../img/background4.jpg");
+	background-size: cover;
+	background-repeat: no-repeat;
 	
 }
 .transparent{

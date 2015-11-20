@@ -355,6 +355,7 @@ Player.prototype.render = function(){
 	for(var i = 0; i < this.cards.length; i++){
 		this.div.append(this.cards[i].render());
 	}
+
 }
 
 Player.prototype.playerCards = function(){
