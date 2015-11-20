@@ -181,7 +181,7 @@ Dealer.prototype.dealerCards = function(){
 
 	for(var i = 0; i < this.cards.length; i++){
 		if(this.cards[i].name === "ace"){
-			var ace = Number(prompt("You have an ACE! 1 or 11?"));
+			var ace = parseInt(prompt("You have an ACE! 1 or 11?"));
 			if(ace === 1){
 				this.cards[i].value = 1;
 			}
@@ -248,7 +248,7 @@ Dealer.prototype.hit = function(){
 	this.cards.push(this.draw());
 
 	if(this.cards[this.cards.length-1].name === "ace"){
-		var ace = Number(prompt("You have an ACE! 1 or 11?"));
+		var ace = parseInt(prompt("You have an ACE! 1 or 11?"));
 		if(ace === 1){
 			this.cards[this.cards.length-1].value = 1;
 		}
@@ -328,7 +328,7 @@ Player.prototype.hit = function(){
 	this.cards.push(this.dealer.draw());
 
 	if(this.cards[this.cards.length - 1].name === "ace"){
-		var ace = Number(prompt("You have an ACE! 1 or 11?"));
+		var ace = parseInt(prompt("You have an ACE! 1 or 11?"));
 
 		if(ace === 1){
 			this.cards[this.cards.length - 1].value = 1;
@@ -366,7 +366,7 @@ Player.prototype.playerCards = function(){
 			twentyOne += this.cards[j].value;
 			if(this.cards[j].name === "ace"){
 
-				var ace = Number(prompt("You have an ACE! 1 or 11?"));
+				var ace = parseInt(prompt("You have an ACE! 1 or 11?"));
 				if(ace === 1){
 					this.cards[j].value = 1;
 					

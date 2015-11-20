@@ -18,6 +18,12 @@ div{
 	overflow: hidden;
 
 }
+.btn{
+	background: #6D80A6;
+}
+.btn:hover {
+  background-color: #777;
+}
 .slide {
 	border-radius: 25px;
 	overflow: hidden;
