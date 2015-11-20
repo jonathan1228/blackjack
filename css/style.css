@@ -21,11 +21,7 @@ div{
 }
 .btn{
 	background: #6D80A6;
-<<<<<<< HEAD
-	color:black;
-=======
 	color: black;
->>>>>>> gui
 }
 .btn:hover {
   background-color: #777;
