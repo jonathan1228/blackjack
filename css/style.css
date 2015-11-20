@@ -21,6 +21,7 @@ div{
 }
 .btn{
 	background: #6D80A6;
+	color:black;
 }
 .btn:hover {
   background-color: #777;
