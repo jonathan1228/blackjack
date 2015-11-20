@@ -239,9 +239,7 @@ Dealer.prototype.isBust = function(){
 		this.stay = true;
 		this.score = 0;
 	}
-	else{
-		this.score = 0;
-	}
+	this.score = 0;
     
 }
 Dealer.prototype.hit = function(){
@@ -315,13 +313,8 @@ Player.prototype.isBust = function(){
 		this.stay = true;
 		this.twentyOne = true;
 		this.tracker = 0;
-	}else if(this.tracker >= 17){
-		this.stay = true;
-		this.tracker = 0;
 	}
-	else{
-		this.tracker = 0;
-	}
+	this.tracker = 0;
 
 }
 Player.prototype.hit = function(){
