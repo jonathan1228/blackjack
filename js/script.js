@@ -89,7 +89,7 @@ Game.prototype.gameRound = function(){
 Game.prototype.playerTurn = function() {
 	if(this.dealer.twentyOne){
 		this.currentPlayer.removeButtons();
-		this.hitOrStay();
+		this.dealer.hitOrStay();
 		return;
 	}	
 	this.outcome();
